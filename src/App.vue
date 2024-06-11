@@ -2,8 +2,6 @@
 import { RouterLink, RouterView } from 'vue-router'
 
 import HelloWorld from './components/HelloWorld.vue'
-
-
 </script>
 
 <template>
@@ -12,7 +10,7 @@ import HelloWorld from './components/HelloWorld.vue'
 
     <div class="wrapper">
       <HelloWorld msg="You did it!" />
-
+      123456
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
