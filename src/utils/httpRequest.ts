@@ -2,7 +2,8 @@ import axios, { AxiosError, type AxiosInstance, type AxiosRequestConfig, type Ax
 
 // 创建axios实例
 const services: AxiosInstance = axios.create({
-  baseURL: "/api", // 设置默认的baseURL
+  // baseURL: "/api", // 设置默认的baseURL
+  baseURL: import.meta.env.VITE_APP_BASE_API, // 设置默认的baseURL
   timeout: 5000, // 设置超时时间
 })
 // 请求拦截器
