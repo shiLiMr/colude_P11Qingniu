@@ -2,7 +2,7 @@
   <div>login</div>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue'
+// import { ref } from 'vue'
 import {testApi} from '@/api/test'
 
 testApi().then(res=>{

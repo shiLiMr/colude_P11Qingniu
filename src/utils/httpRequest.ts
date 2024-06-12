@@ -34,21 +34,21 @@ const request = <T = any>(options: AxiosRequestConfig) => {
     [options.method === 'GET' ? 'params' : 'data']: options.data
   })
 }
-// // get
-// export const get = <T = any>(url: string, data?: Object) => {
-//   return request<T>({ url, method: 'GET', data })
-// }
-// // post
-// export const post = <T = any>(url: string, data?: Object) => {
-//   return request<T>({ url, method: 'POST', data })
-// }
-// // put
-// export const put = <T = any>(url: string, data?: Object) => {
-//   return request<T>({ url, method: 'PUT', data })
-// }
-// // delete
-// export const del = <T = any>(url: string, data?: Object) => {
-//   return request<T>({ url, method: 'DELETE', data })
-// }
+// get
+export const get = <T = any>(url: string, data?: Object) => {
+  return request<T>({ url, method: 'GET', data })
+}
+// post
+export const post = <T = any>(url: string, data?: Object) => {
+  return request<T>({ url, method: 'POST', data })
+}
+// put
+export const put = <T = any>(url: string, data?: Object) => {
+  return request<T>({ url, method: 'PUT', data })
+}
+// delete
+export const del = <T = any>(url: string, data?: Object) => {
+  return request<T>({ url, method: 'DELETE', data })
+}
 
-export default  request
+export default request
