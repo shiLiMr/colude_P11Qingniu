@@ -13,7 +13,7 @@ module.exports = {
     // eslint推荐插件
     'eslint:recommended',
     // standard 插件
-    'standard',
+    // 'standard',
     // vue/eslint-config-typescript 插件
     '@vue/eslint-config-typescript',
     // @vue/eslint-config-prettier/skip-formatting 插件
