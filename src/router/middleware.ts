@@ -15,16 +15,18 @@ console.log('routeFiles', routeFiles)
 const routeConfigurast: RouteRecordRaw[] = []
 // 3. 遍历所有文件路由
 Object.keys(routeFiles).forEach((key: string) => {
+  console.log(routeFiles[key]);
+
   routeFiles[key].default && routeConfigurast.push(routeFiles[key].default)
 })
 // 4.动态添加路由
 export const useMiddleware = (router: Router) => {
-  //  router.beforeEach((to, from, next) =>{
-  routeConfigurast.forEach((routeModule: RouteRecordRaw) => {
-    router.addRoute(routeModule)
-    // })
-    // nextTick(()=>{
-    // next()
-    // })
+  router.beforeEach((to, from, next) => {
+    routeConfigurast.forEach((routeModule: RouteRecordRaw) => {
+      router.addRoute(routeModule)
+    })
+    nextTick(() => {
+      next()
+    })
   })
 }
