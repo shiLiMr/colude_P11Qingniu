@@ -25,5 +25,14 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
+  },
+  server:{
+    proxy:{
+      '/api':{
+        target:'http://serverqn.9yuecloud.com',
+        changeOrigin:true,
+        rewrite:(path)=>path.replace(/^\/api/,'')
+      }
+    }
   }
 })

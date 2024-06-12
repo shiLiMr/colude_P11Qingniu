@@ -2,7 +2,9 @@
 import router from "@/router";
 import type { App } from "vue";
 
-export const load=(app:App)=>{
+ const load=(app:App)=>{
   // 路由加载
   app.use(router);
 }
+
+export default load;
