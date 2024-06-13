@@ -5,7 +5,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue'
+// import { ref } from 'vue'
 import { testApi } from '@/api/test'
 
 // const a = ref(false) // false 允许请求 true不允许请求
