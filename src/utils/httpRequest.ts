@@ -1,5 +1,7 @@
 import axios, { AxiosError, type AxiosInstance, type AxiosRequestConfig, type AxiosResponse, type InternalAxiosRequestConfig } from "axios";
 import { ElMessage } from "element-plus";
+import { useAuthStore } from "@/stores/auth";
+
 // xss攻击
 import Dompurify from 'dompurify';
 type RequestCustomConfig = {
@@ -15,7 +17,13 @@ const services: AxiosInstance = axios.create({
 })
 // 请求拦截器
 services.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+  const store = useAuthStore()
+
   // 请求前的处理逻辑
+  const token = store.token
+  if(token){
+    config.headers.Authorization ='Bearer '+ token
+  }
   return config;
 }, (error: AxiosError) => {
   // 请求错误时的处理逻辑
@@ -27,7 +35,9 @@ services.interceptors.response.use((response: AxiosResponse) => {
   if (response.data.code === 200) {
     return response.data;
   }
-}, (error: AxiosError<ResponceDataType>) => {
+}, async (error: AxiosError<ResponceDataType>) => {
+  const store = useAuthStore()
+
   // 错误状态码处理
   let message = ''
   if (error && error.response) {
@@ -35,8 +45,10 @@ services.interceptors.response.use((response: AxiosResponse) => {
       case 401: //
         message = '登陆过期，请重新登录'
         // 清除token及用户信息
+        await store.resetUser()
         // 跳转到登陆页面
-
+        window.location.href = '/login'
+        
         break
       case 403:
         message = '没有权限'
@@ -101,7 +113,7 @@ const request = <T = any>(options: AxiosRequestConfig, customConfig?: RequestCus
   })
 }
 // get
-export const get = <T = any>(url: string, data: Object) => {
+export const get = <T = any>(url: string, data?: Object) => {
   return request<T>({ url, method: 'GET', data })
 }
 // post

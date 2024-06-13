@@ -1,6 +1,8 @@
 // 将动态路由 添加到路由表中
-import { nextTick } from 'vue'
+// import { nextTick } from 'vue'
 import type { RouteRecordRaw, Router } from 'vue-router'
+
+import { useAuthStore } from '@/stores/auth'
 
 interface EagerLoadedFunc {
   default: RouteRecordRaw
@@ -21,12 +23,32 @@ Object.keys(routeFiles).forEach((key: string) => {
 })
 // 4.动态添加路由
 export const useMiddleware = (router: Router) => {
-  router.beforeEach((to, from, next) => {
-    routeConfigurast.forEach((routeModule: RouteRecordRaw) => {
-      router.addRoute(routeModule)
-    })
-    nextTick(() => {
-      next()
-    })
+  router.beforeEach(async (to, from, next) => {
+    const store = useAuthStore()
+    const token = store.token
+    if (!token) {
+      if (to.path === '/login') {
+        next()
+      } else {
+        next('/login')
+      }
+    } else {
+      if (to.path === '/login') {
+        next(from.path)
+      } else {
+        if (!store.userInfo) {
+          const res = await store.getUserInfor()
+          console.log(res);
+          return next()
+        } else {
+          next()
+        }
+      }
+    }
+
+    // routeConfigurast.forEach((routeModule: RouteRecordRaw) => {
+    //   router.addRoute(routeModule)
+    // })
+
   })
 }

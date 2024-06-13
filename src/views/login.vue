@@ -8,7 +8,6 @@
         style="max-width: 600px"
         :model="ruleForm"
         :rules="rules"
-        label-width="auto"
         class="demo-ruleForm"
         status-icon
       >
@@ -16,7 +15,7 @@
           <el-input v-model="ruleForm.username" placeholder="输入用户名" />
         </el-form-item>
         <el-form-item prop="password">
-          <el-input v-model="ruleForm.password" placeholder="输入用户密码" />
+          <el-input v-model="ruleForm.password" placeholder="输入用户密码" show-password />
         </el-form-item>
 
         <el-form-item>
@@ -31,10 +30,13 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { loginApi } from '@/api/login/login'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+import { useAuthStore } from '@/stores/auth'
 
 const loading = ref(false) // 按钮加载
 
-import {  type FormInstance, type FormRules } from 'element-plus'
+import { type FormInstance, type FormRules } from 'element-plus'
 interface loginPar {
   // 登录 类型
   username: string
@@ -43,8 +45,8 @@ interface loginPar {
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<loginPar>({
   // 登录 数据
-  username: '',
-  password: ''
+  username: 'admin',
+  password: 'abc12345'
 })
 const rules = reactive<FormRules<loginPar>>({
   username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
@@ -54,21 +56,23 @@ const rules = reactive<FormRules<loginPar>>({
 const sunmitForm = () => {
   //登录按钮
   ruleFormRef.value?.validate(async (valid: boolean) => {
+    const store = useAuthStore()
+
     if (!valid) return
-    loading.value=true
+    loading.value = true
     try {
-      const res = await loginApi(ruleForm)
+      const res:any = await loginApi(ruleForm)
       console.log(res)
-      // if(res.response.data.code==200){
-      //   ElMessage.success('登陆成功')
-      // }else{
-      //   ElMessage.error(res.response.data.msg)
-      // }
+      // 登录成功 跳转页面
+      router.push('/')
+      // 登录成功 存储token
+      store.setToken(res.data)
+      // localStorage.setItem('token', res.data.token)
     } catch (err) {
       console.log(err)
     } finally {
       // 成功失败都会执行
-      loading.value=false
+      loading.value = false
     }
   })
 }
