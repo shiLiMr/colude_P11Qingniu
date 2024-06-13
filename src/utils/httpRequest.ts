@@ -1,5 +1,11 @@
 import axios, { AxiosError, type AxiosInstance, type AxiosRequestConfig, type AxiosResponse, type InternalAxiosRequestConfig } from "axios";
 import { ElMessage } from "element-plus";
+// xss攻击
+import DOMPurify from 'dompurify'
+type RequestCustomConfig = {
+  isPurify: boolean
+}
+
 
 // 创建axios实例
 const services: AxiosInstance = axios.create({
@@ -58,7 +64,7 @@ type ResponceDataType<T = any> = {
 }
 // 完整请求方式
 let history: string[] = []; // 保存未完成的请求接口地址
-const request = <T = any>(options: AxiosRequestConfig) => {
+const request = <T = any>(options: AxiosRequestConfig,customConfig?: RequestCustomConfig) => {
   /**   解决重复请求
    * 创建一个新数组，保存未完成的请求接口地址
    * 请求成功时，移除数组中已完成的接口地址
@@ -72,8 +78,21 @@ const request = <T = any>(options: AxiosRequestConfig) => {
   }
   url && history.push(url) // 将请求的接口地址添加到数组中
 
-  return services.request<T, ResponceDataType<T>>({
+  // 防止xss攻击, 静态脏数据
+  if (customConfig?.isPurify) {
+    if (options.method?.toLocaleUpperCase() === 'POST' && options.data) {
+      const dataStr = JSON.stringify(options.data)
+      options.data = JSON.parse(DOMPurify.sanitize(dataStr))
+    }
+    if (options.method?.toLocaleUpperCase() === 'GET' && options.params) {
+      for (const key in options.params) {
+        options.params[key] = DOMPurify.sanitize(options.params[key])
+        console.log('options.params===>', options.params)
+      }
+    }
+  }
 
+  return services.request<T, ResponceDataType<T>>({
     ...options,
     [options.method === 'GET' ? 'params' : 'data']: options.data
   }).finally(() => {
