@@ -1,7 +1,7 @@
 import axios, { AxiosError, type AxiosInstance, type AxiosRequestConfig, type AxiosResponse, type InternalAxiosRequestConfig } from "axios";
 import { ElMessage } from "element-plus";
 // xss攻击
-import DOMPurify from 'dompurify'
+import Dompurify from 'dompurify';
 type RequestCustomConfig = {
   isPurify: boolean
 }
@@ -64,7 +64,7 @@ type ResponceDataType<T = any> = {
 }
 // 完整请求方式
 let history: string[] = []; // 保存未完成的请求接口地址
-const request = <T = any>(options: AxiosRequestConfig,customConfig?: RequestCustomConfig) => {
+const request = <T = any>(options: AxiosRequestConfig, customConfig?: RequestCustomConfig) => {
   /**   解决重复请求
    * 创建一个新数组，保存未完成的请求接口地址
    * 请求成功时，移除数组中已完成的接口地址
@@ -82,16 +82,16 @@ const request = <T = any>(options: AxiosRequestConfig,customConfig?: RequestCust
   if (customConfig?.isPurify) {
     if (options.method?.toLocaleUpperCase() === 'POST' && options.data) {
       const dataStr = JSON.stringify(options.data)
-      options.data = JSON.parse(DOMPurify.sanitize(dataStr))
+      options.data = JSON.parse(Dompurify.sanitize(dataStr))
     }
     if (options.method?.toLocaleUpperCase() === 'GET' && options.params) {
       for (const key in options.params) {
-        options.params[key] = DOMPurify.sanitize(options.params[key])
+        options.params[key] = Dompurify.sanitize(options.params[key])
         console.log('options.params===>', options.params)
       }
     }
   }
-
+  // 请求前的处理逻辑 完整地请求
   return services.request<T, ResponceDataType<T>>({
     ...options,
     [options.method === 'GET' ? 'params' : 'data']: options.data
@@ -101,19 +101,19 @@ const request = <T = any>(options: AxiosRequestConfig,customConfig?: RequestCust
   })
 }
 // get
-export const get = <T = any>(url: string, data?: Object) => {
+export const get = <T = any>(url: string, data: Object) => {
   return request<T>({ url, method: 'GET', data })
 }
 // post
-export const post = <T = any>(url: string, data?: Object) => {
+export const post = <T = any>(url: string, data: Object) => {
   return request<T>({ url, method: 'POST', data })
 }
 // put
-export const put = <T = any>(url: string, data?: Object) => {
+export const put = <T = any>(url: string, data: Object) => {
   return request<T>({ url, method: 'PUT', data })
 }
 // delete
-export const del = <T = any>(url: string, data?: Object) => {
+export const del = <T = any>(url: string, data: Object) => {
   return request<T>({ url, method: 'DELETE', data })
 }
 
