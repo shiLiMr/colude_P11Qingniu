@@ -9,13 +9,13 @@ type EagerLoadedModules = Record<string, EagerLoadedFunc>
 
 //1. 获取 modules目录下所有的动态路由文件
 const routeFiles: EagerLoadedModules = import.meta.glob('./modules/*.ts', { eager: true })
-console.log('routeFiles', routeFiles)
+// console.log('routeFiles', routeFiles)
 
 //2.初始化一个变量 ，保存遍历出来的路由
 const routeConfigurast: RouteRecordRaw[] = []
 // 3. 遍历所有文件路由
 Object.keys(routeFiles).forEach((key: string) => {
-  console.log(routeFiles[key]);
+  // console.log(routeFiles[key]);
 
   routeFiles[key].default && routeConfigurast.push(routeFiles[key].default)
 })

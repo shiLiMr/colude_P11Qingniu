@@ -29,10 +29,28 @@ type ResponceDataType<T = any> = {
   data: T
 }
 // 完整请求方式
+let history: string[] = []; // 保存未完成的请求接口地址
 const request = <T = any>(options: AxiosRequestConfig) => {
+  /**
+   * 创建一个新数组，保存未完成的请求接口地址
+   * 请求成功时，移除数组中已完成的接口地址
+   * 若此请求未完成，则不能发送相同的请求
+   * 若下一次请求的接口在数组中，则说明当前请求未完成，此时不能再次发送请求
+   *
+   */
+  const url =  options.url // 获取请求的接口地址
+  if(history.includes(url!)){
+    return new Error('重复请求 !')
+  }
+  url && history.push(url) // 将请求的接口地址添加到数组中
+
   return services.request<T, ResponceDataType<T>>({
+
     ...options,
     [options.method === 'GET' ? 'params' : 'data']: options.data
+  }).finally(() => {
+    // 请求完成后，移除数组中已完成的接口地址
+    history = history.filter(item => item !== url)
   })
 }
 // get
