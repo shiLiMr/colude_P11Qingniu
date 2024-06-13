@@ -34,7 +34,7 @@ import { loginApi } from '@/api/login/login'
 
 const loading = ref(false) // 按钮加载
 
-import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
+import {  type FormInstance, type FormRules } from 'element-plus'
 interface loginPar {
   // 登录 类型
   username: string
